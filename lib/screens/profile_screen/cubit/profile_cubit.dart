@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:drift_post_app/database/app_database.dart';
 import 'package:equatable/equatable.dart';
@@ -25,39 +24,56 @@ class ProfileCubit extends Cubit<ProfileState> {
   void submittedData(BuildContext context, File image, String userAge,
       String userName, String userPhone) {
     // emit(RegistrationLoadingState());
-    validateUser(context, image, userName, userAge, userPhone).then((
-        value) async {
+    validateProfile(context, image, userName, userAge, userPhone)
+        .then((value) async {
       if (value) {
-        log("Successfully added $value");
-
+        log("Added $value");
+        Fluttertoast.showToast(
+            msg: "Added : $value",
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0);
       } else {
-
+       // log("Failedshu $value");
       }
     }).onError((error, stackTrace) {
       //emit(RegistrationErrorState());
+      log("FailedHog ya $error");
+      Fluttertoast.showToast(
+          msg: "Error : $error",
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
     });
   }
 
-  Future<bool> validateUser(context, File image, String userName,
-      String userAge,
-      String userPhone) async {
+  Future<bool> validateProfile(context, File image, String userName,
+      String userAge, String userPhone) async {
     //SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (
-    image.path.isEmpty ||
+    if (image.path.isEmpty ||
         userName.isEmpty ||
         userAge.isEmpty ||
-        userPhone.isEmpty ) {
+        userPhone.isEmpty) {
+      log("failed");
+
       return Future.value(false);
     } else {
       final profile = ProfileTableCompanion(
           userName: drift.Value(userName),
           age: drift.Value(int.parse(userAge)),
           phoneNumber: drift.Value(int.parse(userPhone)),
-          thumbnailImg: drift.Value(File(image.path).readAsBytesSync())
-      );
+          thumbnailImg: drift.Value(File(image.path).readAsBytesSync()));
       // if()
-      getIt<AppDatabase>().profileTableDao.add_user_profile(profile).then((value) {
+      getIt<AppDatabase>()
+          .profileTableDao
+          .addUserProfile(profile)
+          .then((value) {
+        log("profilePic $profile");
         Fluttertoast.showToast(
             msg: "Profile Added Successfully",
             gravity: ToastGravity.BOTTOM,
@@ -74,15 +90,12 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> pickImageFromGallery(context) async {
-    emit(PicLoadingState());
-    log("ProfileInitialState $ProfileInitialState");
+    //log("ProfileInitialState $ProfileInitialState");
     // Pick an image
-    PickedFile? pickedFile = await _picker.getImage(
-        source: ImageSource.gallery);
+    PickedFile? pickedFile =
+        await _picker.getImage(source: ImageSource.gallery);
     // prefs?.setString("image", image!.path.toString());
-
     if (pickedFile != null) {
-
       image = File(pickedFile.path);
       convertToBase64(image!);
       log("_image $image");
@@ -90,11 +103,13 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       // prefs?.setString("image", convertToBase64(_image!));
       //print("was"+convertToBase64(_image!));
-
-
-      log("PicLoadedState $PicLoadedState");
+      emit(PicLoadingState());
+      Future.delayed(const Duration(milliseconds:800), () {
+        // Do something
+         emit(PicLoadedState(image!));
+      });
+      //log("PicLoadedState $PicLoadedState");
     }
-    emit(PicLoadedState(image!));
 
     Navigator.pop(context);
   }
@@ -106,10 +121,15 @@ class ProfileCubit extends Cubit<ProfileState> {
     if (pickedFile != null) {
       image = File(pickedFile.path);
       convertToBase64(image!);
-      emit(PicLoadedState(image!));
+      //emit(PicLoadedState(image!));
+      Navigator.pop(context);
 
+      emit(PicLoadingState());
+      Future.delayed(const Duration(seconds:1), () {
+        // Do something
+        emit(PicLoadedState(image!));
+      });
     }
-    Navigator.pop(context);
   }
 
   String convertToBase64(File image) {
@@ -120,13 +140,10 @@ class ProfileCubit extends Cubit<ProfileState> {
     // print('THis image i will save $base64image');
     myImage = base64Encode(imageBytes);
     //emit(PicLoadedState(image));
+
     return base64image;
   }
-
-
-
 }
-
 
 // if (value) {
 // log("Successfully added $value");

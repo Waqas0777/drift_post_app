@@ -43,8 +43,8 @@ class UserCubit extends Cubit<UserState> {
       return false;
     } else {
       final entity = UsersTableCompanion(
-        user_email: drift.Value(userEmail),
-        user_password: drift.Value(userPassword),
+        userEmail: drift.Value(userEmail),
+        userPassword: drift.Value(userPassword),
       );
 
       getIt<AppDatabase>().usersTableDao.addUser(entity).then((value) {

@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'cubit/profile_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -37,22 +40,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: const Text("Profile Screen"),
       ),
       body: SafeArea(
-        child: BlocProvider(
-          create: (context) => ProfileCubit(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            child: SingleChildScrollView(
-              child: Center(
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    BlocBuilder<ProfileCubit, ProfileState>(
-                      builder: (context, state) {
-                        //File? image = context.read<ProfileCubit>().image;
-                        if (state is ProfileInitialState) {
-                          return InkWell(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14.0),
+          child: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  BlocBuilder<ProfileCubit, ProfileState>(
+                    builder: (context, state) {
+                      //File? image = context.read<ProfileCubit>().image;
+                      if (state is ProfileInitialState) {
+                        log("state $state");
+                        return InkWell(
+                          onTap: () {
+                            _dialogBuilder(context);
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            height: MediaQuery.of(context).size.width * 0.4,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: const Color(0xffb8e0d3),
+                            ),
+                            child: const Icon(
+                              Icons.add,
+                            ),
+                          ),
+                        );
+                      } else if (state is PicLoadingState) {
+                        return Container(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            height: MediaQuery.of(context).size.width * 0.4,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Center(
+                                child: CircularProgressIndicator()));
+                      } else if (state is PicLoadedState) {
+                        //log("state $state");
+                        return InkWell(
                             onTap: () {
                               _dialogBuilder(context);
                             },
@@ -61,76 +90,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               height: MediaQuery.of(context).size.width * 0.4,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: const Color(0xffb8e0d3),
                               ),
-                              child: const Icon(
-                                Icons.add,
+                              child: Image.file(
+                                state.image,
+                                fit: BoxFit.cover,
                               ),
-                            ),
-                          );
-                        }
-                        // else if (state is PicLoadingState) {
-                        //   return const CircularProgressIndicator();
-                        // }
-                        else if (state is PicLoadedState) {
-                          return InkWell(
-                            onTap: () {
-                              // showDialog();
-                              // log("showDialog ++ "+ showDialog().toString());
-                              _dialogBuilder(context);
-                            },
-                            child: Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                height: MediaQuery.of(context).size.width * 0.4,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Image.file(
-                                  state.image,
-                                  fit: BoxFit.fitWidth,
-                                )),
-                          );
-                        }
-                        else {
-                          return Container();
-                        }
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    buildFormWidget(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    BlocBuilder<ProfileCubit, ProfileState>(
-                      builder: (context, state) {
-                        final image = context.read<ProfileCubit>().image;
-                        return CupertinoButton(
-                          color: Colors.blue,
-                          onPressed: () {
-                            //addEmployee();
-
-                            if (_formKey.currentState!.validate()) {
-                              BlocProvider.of<ProfileCubit>(context)
-                                  .submittedData(
-                                context,
-                                image!,
-                                nameController.text.trim(),
-                                ageController.text.trim(),
-                                phoneController.text.trim(),
-                              );
-                            }
-                            // Navigator.push(context, MaterialPageRoute(builder: (context){
-                            //   return UpdateEmployeeScreen();
-                            // }));
-                          },
-                          child: const Text("Add"),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                            ));
+                      } else {
+                        return Container();
+                      }
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  buildFormWidget(),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  BlocBuilder<ProfileCubit, ProfileState>(
+                    builder: (context, state) {
+                      final image = BlocProvider.of<ProfileCubit>(context).image;
+                          //context.read<ProfileCubit>().image;
+                      return CupertinoButton(
+                        color: Colors.blue,
+                        onPressed: () {
+                          //addEmployee();
+                          if (image!.path.isEmpty) {
+                            Fluttertoast.showToast(
+                                msg: "Please Upload Pic",
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.green,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                          } else if (_formKey.currentState!.validate()) {
+                            BlocProvider.of<ProfileCubit>(context)
+                                .submittedData(
+                              context,
+                              image!,
+                              nameController.text.trim(),
+                              ageController.text.trim(),
+                              phoneController.text.trim(),
+                            );
+                          }
+                          // Navigator.push(context, MaterialPageRoute(builder: (context){
+                          //   return UpdateEmployeeScreen();
+                          // }));
+                        },
+                        child: const Text("Add"),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ),
@@ -283,7 +295,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               //fillColor: Colors.green
             ),
-            keyboardType: TextInputType.text,
+            keyboardType: TextInputType.number,
             style: const TextStyle(
               fontFamily: "Poppins",
             ),
