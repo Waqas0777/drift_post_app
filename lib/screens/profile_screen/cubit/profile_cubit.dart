@@ -73,7 +73,7 @@ class ProfileCubit extends Cubit<ProfileState> {
           .profileTableDao
           .addUserProfile(profile)
           .then((value) {
-        log("profilePic $profile");
+        //log("profilePic $profile");
         Fluttertoast.showToast(
             msg: "Profile Added Successfully",
             gravity: ToastGravity.BOTTOM,
@@ -82,7 +82,7 @@ class ProfileCubit extends Cubit<ProfileState> {
             textColor: Colors.white,
             fontSize: 16.0);
 
-        Navigator.pop(context);
+       // Navigator.pop(context);
       });
 
       return Future.value(true);

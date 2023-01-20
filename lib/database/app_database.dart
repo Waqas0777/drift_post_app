@@ -26,15 +26,15 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
-  @override
-  MigrationStrategy get migration => MigrationStrategy(
-        // Runs after all the migrations but BEFORE any queries have a chance to execute
-
-        beforeOpen: (details) async {
-          // Make sure that foreign keys are enabled
-          await customStatement('PRAGMA foreign_keys = ON');
-        },
-      );
+  // @override
+  // MigrationStrategy get migration => MigrationStrategy(
+  //       // Runs after all the migrations but BEFORE any queries have a chance to execute
+  //
+  //       beforeOpen: (details) async {
+  //         // Make sure that foreign keys are enabled
+  //         await customStatement('PRAGMA foreign_keys = ON');
+  //       },
+  //     );
 }

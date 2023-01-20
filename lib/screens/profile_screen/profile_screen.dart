@@ -116,7 +116,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Colors.blue,
                         onPressed: () {
                           //addEmployee();
-                          if (image!.path.isEmpty) {
+                          if (image!.path.isNotEmpty || _formKey.currentState!.validate()) {
+                            BlocProvider.of<ProfileCubit>(context)
+                                .submittedData(
+                              context,
+                              image,
+                              nameController.text.trim(),
+                              ageController.text.trim(),
+                              phoneController.text.trim(),
+                            );
+                          } else  {
+
                             Fluttertoast.showToast(
                                 msg: "Please Upload Pic",
                                 gravity: ToastGravity.BOTTOM,
@@ -124,15 +134,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 backgroundColor: Colors.green,
                                 textColor: Colors.white,
                                 fontSize: 16.0);
-                          } else if (_formKey.currentState!.validate()) {
-                            BlocProvider.of<ProfileCubit>(context)
-                                .submittedData(
-                              context,
-                              image!,
-                              nameController.text.trim(),
-                              ageController.text.trim(),
-                              phoneController.text.trim(),
-                            );
                           }
                           // Navigator.push(context, MaterialPageRoute(builder: (context){
                           //   return UpdateEmployeeScreen();
