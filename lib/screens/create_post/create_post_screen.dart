@@ -1,19 +1,18 @@
 import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'cubit/profile_cubit.dart';
+import 'cubit/create_post_cubit.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+class CreatePostScreen extends StatefulWidget {
+  const CreatePostScreen({Key? key}) : super(key: key);
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<CreatePostScreen> createState() => _CreatePostScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _CreatePostScreenState extends State<CreatePostScreen> {
   //final ImagePicker _picker = ImagePicker();
   //File? _image;
 
@@ -21,9 +20,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // String myImage = '';
   List<int>? list;
   final _formKey = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController ageController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() {
@@ -34,10 +32,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    // _appDb.close();
+    titleController.dispose();
+    descriptionController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profile Screen"),
+        title: const Text("Create Post"),
       ),
       body: SafeArea(
         child: Padding(
@@ -49,10 +57,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  BlocBuilder<ProfileCubit, ProfileState>(
+                  BlocBuilder<CreatePostCubit, CreatePostState>(
                     builder: (context, state) {
                       //File? image = context.read<ProfileCubit>().image;
-                      if (state is ProfileInitialState) {
+                      if (state is CreatePostInitialState) {
                         log("state $state");
                         return InkWell(
                           onTap: () {
@@ -108,33 +116,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  BlocBuilder<ProfileCubit, ProfileState>(
+                  BlocBuilder<CreatePostCubit, CreatePostState>(
                     builder: (context, state) {
-                      final image = BlocProvider.of<ProfileCubit>(context).image;
-                          //context.read<ProfileCubit>().image;
+                      final image =
+                          BlocProvider.of<CreatePostCubit>(context).image;
+                      //context.read<ProfileCubit>().image;
                       return CupertinoButton(
                         color: Colors.blue,
                         onPressed: () {
                           //addEmployee();
-                          if (image!.path.isNotEmpty || _formKey.currentState!.validate()) {
-                            BlocProvider.of<ProfileCubit>(context)
-                                .submittedData(
-                              context,
-                              image,
-                              nameController.text.trim(),
-                              ageController.text.trim(),
-                              phoneController.text.trim(),
-                            );
-                          } else  {
-
-                            Fluttertoast.showToast(
-                                msg: "Please Upload Pic",
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.green,
-                                textColor: Colors.white,
-                                fontSize: 16.0);
+                          if (_formKey.currentState!.validate()) {
+                            if (image != null) {
+                              BlocProvider.of<CreatePostCubit>(context)
+                                  .submittedData(
+                                      context,
+                                      image,
+                                      titleController.text.trim(),
+                                      descriptionController.text.trim());
+                            } else {
+                              Fluttertoast.showToast(msg: "Please pick image");
+                            }
                           }
+
+                          // else  {
+                          //
+                          //   Fluttertoast.showToast(
+                          //       msg: "Please Upload Pic",
+                          //       gravity: ToastGravity.BOTTOM,
+                          //       timeInSecForIosWeb: 1,
+                          //       backgroundColor: Colors.green,
+                          //       textColor: Colors.white,
+                          //       fontSize: 16.0);
+                          // }
                           // Navigator.push(context, MaterialPageRoute(builder: (context){
                           //   return UpdateEmployeeScreen();
                           // }));
@@ -165,7 +178,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 InkWell(
                   onTap: () async {
-                    BlocProvider.of<ProfileCubit>(context)
+                    BlocProvider.of<CreatePostCubit>(context)
                         .pickImageFromGallery(context);
                   },
                   child: Row(
@@ -192,7 +205,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 InkWell(
                     onTap: () async {
                       // Capture a photo
-                      BlocProvider.of<ProfileCubit>(context)
+                      BlocProvider.of<CreatePostCubit>(context)
                           .pickImageFromCamera(context);
                     },
                     child: Row(
@@ -226,9 +239,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
         children: [
           TextFormField(
-            controller: nameController,
+            controller: titleController,
             decoration: InputDecoration(
-              labelText: "Enter User Age",
+              labelText: "Enter Post Title",
               fillColor: Colors.white,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
@@ -236,14 +249,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               //fillColor: Colors.green
             ),
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.text,
             style: const TextStyle(
               fontFamily: "Poppins",
             ),
             // controller: nameController,
             validator: (value) {
               if (value!.isEmpty) {
-                return 'Please enter your age';
+                return 'Please Enter Post Title';
               }
               // else if (value.length < 5) {
               //   return "Name should be 5 character long";
@@ -257,16 +270,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             height: 15,
           ),
           TextFormField(
-            controller: ageController,
+            controller: descriptionController,
             decoration: InputDecoration(
-              labelText: "Enter Your Name",
+              labelText: "Enter Post Description",
               fillColor: Colors.white,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
                 borderSide: const BorderSide(),
               ),
             ),
-            keyboardType: TextInputType.emailAddress,
+            keyboardType: TextInputType.text,
             style: const TextStyle(
               fontFamily: "Poppins",
             ),
@@ -278,34 +291,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               //   return "Age must be less than 121";
               // }
               else {
-                return null;
-              }
-            },
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          TextFormField(
-            controller: phoneController,
-            decoration: InputDecoration(
-              labelText: "Enter Your Phone Number",
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-                borderSide: const BorderSide(),
-              ),
-              //fillColor: Colors.green
-            ),
-            keyboardType: TextInputType.number,
-            style: const TextStyle(
-              fontFamily: "Poppins",
-            ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Please enter your Phone Number';
-              } else if (value.length < 5) {
-                return "Password must be 5 character long";
-              } else {
                 return null;
               }
             },

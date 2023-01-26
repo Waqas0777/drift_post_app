@@ -10,33 +10,34 @@ import 'package:meta/meta.dart';
 import 'dart:io';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
-
 import '../../../main.dart';
+import '../../registered_post/cubit/registered_post_cubit.dart';
 
-part 'profile_state.dart';
+part 'create_post_state.dart';
 
-class ProfileCubit extends Cubit<ProfileState> {
-  ProfileCubit() : super(ProfileInitialState());
+class CreatePostCubit extends Cubit<CreatePostState> {
+  CreatePostCubit() : super(CreatePostInitialState());
   final ImagePicker _picker = ImagePicker();
   File? image;
   String myImage = '';
 
-  void submittedData(BuildContext context, File image, String userAge,
-      String userName, String userPhone) {
+  void submittedData(BuildContext context, File image, String postTitle,
+      String postDescription) {
     // emit(RegistrationLoadingState());
-    validateProfile(context, image, userName, userAge, userPhone)
+    validateProfile(context, image, postTitle, postDescription)
         .then((value) async {
       if (value) {
         log("Added $value");
-        Fluttertoast.showToast(
-            msg: "Added : $value",
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        emit(CreatePostInitialState());
+        // Fluttertoast.showToast(
+        //     msg: "Added : $value",
+        //     gravity: ToastGravity.BOTTOM,
+        //     timeInSecForIosWeb: 1,
+        //     backgroundColor: Colors.green,
+        //     textColor: Colors.white,
+        //     fontSize: 16.0);
       } else {
-       // log("Failedshu $value");
+        // log("Failedshu $value");
       }
     }).onError((error, stackTrace) {
       //emit(RegistrationErrorState());
@@ -51,38 +52,31 @@ class ProfileCubit extends Cubit<ProfileState> {
     });
   }
 
-  Future<bool> validateProfile(context, File image, String userName,
-      String userAge, String userPhone) async {
+  Future<bool> validateProfile(
+      context, File image, String postTitle, String postDescription) async {
     //SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (image.path.isEmpty ||
-        userName.isEmpty ||
-        userAge.isEmpty ||
-        userPhone.isEmpty) {
+    if (image.path.isEmpty || postTitle.isEmpty || postDescription.isEmpty) {
       log("failed");
 
       return Future.value(false);
     } else {
-      final profile = ProfileTableCompanion(
-          userName: drift.Value(userName),
-          age: drift.Value(int.parse(userAge)),
-          phoneNumber: drift.Value(int.parse(userPhone)),
+      final post = PostTableCompanion(
+          postName: drift.Value(postTitle),
+          postDescription: drift.Value(postDescription),
           thumbnailImg: drift.Value(File(image.path).readAsBytesSync()));
       // if()
-      getIt<AppDatabase>()
-          .profileTableDao
-          .addUserProfile(profile)
-          .then((value) {
-        //log("profilePic $profile");
+      getIt<AppDatabase>().postTableDao.addUserProfile(post).then((value) {
+      //  log("profilePic $value");
         Fluttertoast.showToast(
-            msg: "Profile Added Successfully",
+            msg: "Post Added Successfully",
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
             backgroundColor: Colors.green,
             textColor: Colors.white,
             fontSize: 16.0);
-
-       // Navigator.pop(context);
+        // emit(ProfileInitialState());
+        Navigator.pop(context);
       });
 
       return Future.value(true);
@@ -104,9 +98,9 @@ class ProfileCubit extends Cubit<ProfileState> {
       // prefs?.setString("image", convertToBase64(_image!));
       //print("was"+convertToBase64(_image!));
       emit(PicLoadingState());
-      Future.delayed(const Duration(milliseconds:800), () {
+      Future.delayed(const Duration(milliseconds: 800), () {
         // Do something
-         emit(PicLoadedState(image!));
+        emit(PicLoadedState(image!));
       });
       //log("PicLoadedState $PicLoadedState");
     }
@@ -125,7 +119,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       Navigator.pop(context);
 
       emit(PicLoadingState());
-      Future.delayed(const Duration(seconds:1), () {
+      Future.delayed(const Duration(seconds: 1), () {
         // Do something
         emit(PicLoadedState(image!));
       });

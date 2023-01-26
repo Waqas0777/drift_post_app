@@ -1,20 +1,32 @@
-import 'package:drift_post_app/screens/profile_screen/cubit/profile_cubit.dart';
-import 'package:drift_post_app/screens/profile_screen/profile_screen.dart';
-import 'package:drift_post_app/screens/user_screen/cubit/user_cubit.dart';
+import 'package:drift_post_app/screens/create_post/cubit/create_post_cubit.dart';
+import 'package:drift_post_app/screens/registered_post/cubit/registered_post_cubit.dart';
+import 'package:drift_post_app/screens/registered_post/registered_post_screen.dart';
+import 'package:drift_post_app/screens/registered_users/cubit/registered_user_cubit.dart';
+import 'package:drift_post_app/screens/user_login_screen/cubit/login_cubit.dart';
+import 'package:drift_post_app/screens/user_registration_screen/cubit/user_cubit.dart';
+import 'package:drift_post_app/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'database/app_database.dart';
+import 'model/sharedpreferences_model.dart';
 
 void main() async {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
   await initDependencyInjection();
+  runApp(const MyApp());
+
 }
 
 
 Future<void> initDependencyInjection() async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   getIt.registerSingleton<AppDatabase>(AppDatabase());
+   getIt.registerSingleton<SharedPreferencesModel>(SharedPreferencesModel(sharedPreferences));
+
+  // getIt.registerSingleton<UsersTableDao>(UsersTableDao());
+
 }
 
 final getIt = GetIt.instance;
@@ -27,7 +39,11 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<UserCubit>(create:(BuildContext context)=>UserCubit()),
-        BlocProvider<ProfileCubit>(create:(BuildContext context)=>ProfileCubit()),
+        // BlocProvider<RegisteredUserCubit>(create:(BuildContext context)=>RegisteredUserCubit()..getAllUsers()),
+        BlocProvider<LoginCubit>(create:(BuildContext context)=>LoginCubit()),
+        BlocProvider<RegisteredPostCubit>(create:(BuildContext context)=>RegisteredPostCubit()),
+        BlocProvider<CreatePostCubit>(create:(BuildContext context)=>CreatePostCubit()),
+        // BlocProvider<RegisteredProfileCubit>(create:(BuildContext context)=>RegisteredProfileCubit()..getAllProfiles()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -36,7 +52,7 @@ class MyApp extends StatelessWidget {
 
           primarySwatch: Colors.blue,
         ),
-        home: const ProfileScreen(),
+        home: const SplashScreen(),
       ),
     );
   }

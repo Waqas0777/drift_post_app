@@ -3,38 +3,33 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
-class $ProfileTableTable extends ProfileTable
-    with TableInfo<$ProfileTableTable, ProfileTableData> {
+class $PostTableTable extends PostTable
+    with TableInfo<$PostTableTable, PostTableData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $ProfileTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  $PostTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _postIdMeta = const VerificationMeta('postId');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
+  late final GeneratedColumn<int> postId = GeneratedColumn<int>(
+      'post_id', aliasedName, false,
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _ageMeta = const VerificationMeta('age');
+  static const VerificationMeta _postNameMeta =
+      const VerificationMeta('postName');
   @override
-  late final GeneratedColumn<int> age = GeneratedColumn<int>(
-      'age', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _userNameMeta =
-      const VerificationMeta('userName');
-  @override
-  late final GeneratedColumn<String> userName = GeneratedColumn<String>(
-      'user_name', aliasedName, true,
+  late final GeneratedColumn<String> postName = GeneratedColumn<String>(
+      'post_name', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _phoneNumberMeta =
-      const VerificationMeta('phoneNumber');
+  static const VerificationMeta _postDescriptionMeta =
+      const VerificationMeta('postDescription');
   @override
-  late final GeneratedColumn<int> phoneNumber = GeneratedColumn<int>(
-      'phone_number', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+  late final GeneratedColumn<String> postDescription = GeneratedColumn<String>(
+      'post_description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _thumbnailImgMeta =
       const VerificationMeta('thumbnailImg');
   @override
@@ -43,32 +38,29 @@ class $ProfileTableTable extends ProfileTable
           type: DriftSqlType.blob, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, age, userName, phoneNumber, thumbnailImg];
+      [postId, postName, postDescription, thumbnailImg];
   @override
-  String get aliasedName => _alias ?? 'profile_table';
+  String get aliasedName => _alias ?? 'post_table';
   @override
-  String get actualTableName => 'profile_table';
+  String get actualTableName => 'post_table';
   @override
-  VerificationContext validateIntegrity(Insertable<ProfileTableData> instance,
+  VerificationContext validateIntegrity(Insertable<PostTableData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    if (data.containsKey('post_id')) {
+      context.handle(_postIdMeta,
+          postId.isAcceptableOrUnknown(data['post_id']!, _postIdMeta));
     }
-    if (data.containsKey('age')) {
+    if (data.containsKey('post_name')) {
+      context.handle(_postNameMeta,
+          postName.isAcceptableOrUnknown(data['post_name']!, _postNameMeta));
+    }
+    if (data.containsKey('post_description')) {
       context.handle(
-          _ageMeta, age.isAcceptableOrUnknown(data['age']!, _ageMeta));
-    }
-    if (data.containsKey('user_name')) {
-      context.handle(_userNameMeta,
-          userName.isAcceptableOrUnknown(data['user_name']!, _userNameMeta));
-    }
-    if (data.containsKey('phone_number')) {
-      context.handle(
-          _phoneNumberMeta,
-          phoneNumber.isAcceptableOrUnknown(
-              data['phone_number']!, _phoneNumberMeta));
+          _postDescriptionMeta,
+          postDescription.isAcceptableOrUnknown(
+              data['post_description']!, _postDescriptionMeta));
     }
     if (data.containsKey('thumbnail_img')) {
       context.handle(
@@ -80,55 +72,47 @@ class $ProfileTableTable extends ProfileTable
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {postId};
   @override
-  ProfileTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  PostTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return ProfileTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      age: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}age']),
-      userName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}user_name']),
-      phoneNumber: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}phone_number']),
+    return PostTableData(
+      postId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}post_id'])!,
+      postName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}post_name']),
+      postDescription: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}post_description']),
       thumbnailImg: attachedDatabase.typeMapping
           .read(DriftSqlType.blob, data['${effectivePrefix}thumbnail_img']),
     );
   }
 
   @override
-  $ProfileTableTable createAlias(String alias) {
-    return $ProfileTableTable(attachedDatabase, alias);
+  $PostTableTable createAlias(String alias) {
+    return $PostTableTable(attachedDatabase, alias);
   }
 }
 
-class ProfileTableData extends DataClass
-    implements Insertable<ProfileTableData> {
-  final int id;
-  final int? age;
-  final String? userName;
-  final int? phoneNumber;
+class PostTableData extends DataClass implements Insertable<PostTableData> {
+  final int postId;
+  final String? postName;
+  final String? postDescription;
   final Uint8List? thumbnailImg;
-  const ProfileTableData(
-      {required this.id,
-      this.age,
-      this.userName,
-      this.phoneNumber,
+  const PostTableData(
+      {required this.postId,
+      this.postName,
+      this.postDescription,
       this.thumbnailImg});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    if (!nullToAbsent || age != null) {
-      map['age'] = Variable<int>(age);
+    map['post_id'] = Variable<int>(postId);
+    if (!nullToAbsent || postName != null) {
+      map['post_name'] = Variable<String>(postName);
     }
-    if (!nullToAbsent || userName != null) {
-      map['user_name'] = Variable<String>(userName);
-    }
-    if (!nullToAbsent || phoneNumber != null) {
-      map['phone_number'] = Variable<int>(phoneNumber);
+    if (!nullToAbsent || postDescription != null) {
+      map['post_description'] = Variable<String>(postDescription);
     }
     if (!nullToAbsent || thumbnailImg != null) {
       map['thumbnail_img'] = Variable<Uint8List>(thumbnailImg);
@@ -136,30 +120,28 @@ class ProfileTableData extends DataClass
     return map;
   }
 
-  ProfileTableCompanion toCompanion(bool nullToAbsent) {
-    return ProfileTableCompanion(
-      id: Value(id),
-      age: age == null && nullToAbsent ? const Value.absent() : Value(age),
-      userName: userName == null && nullToAbsent
+  PostTableCompanion toCompanion(bool nullToAbsent) {
+    return PostTableCompanion(
+      postId: Value(postId),
+      postName: postName == null && nullToAbsent
           ? const Value.absent()
-          : Value(userName),
-      phoneNumber: phoneNumber == null && nullToAbsent
+          : Value(postName),
+      postDescription: postDescription == null && nullToAbsent
           ? const Value.absent()
-          : Value(phoneNumber),
+          : Value(postDescription),
       thumbnailImg: thumbnailImg == null && nullToAbsent
           ? const Value.absent()
           : Value(thumbnailImg),
     );
   }
 
-  factory ProfileTableData.fromJson(Map<String, dynamic> json,
+  factory PostTableData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return ProfileTableData(
-      id: serializer.fromJson<int>(json['id']),
-      age: serializer.fromJson<int?>(json['age']),
-      userName: serializer.fromJson<String?>(json['userName']),
-      phoneNumber: serializer.fromJson<int?>(json['phoneNumber']),
+    return PostTableData(
+      postId: serializer.fromJson<int>(json['postId']),
+      postName: serializer.fromJson<String?>(json['postName']),
+      postDescription: serializer.fromJson<String?>(json['postDescription']),
       thumbnailImg: serializer.fromJson<Uint8List?>(json['thumbnailImg']),
     );
   }
@@ -167,35 +149,33 @@ class ProfileTableData extends DataClass
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'age': serializer.toJson<int?>(age),
-      'userName': serializer.toJson<String?>(userName),
-      'phoneNumber': serializer.toJson<int?>(phoneNumber),
+      'postId': serializer.toJson<int>(postId),
+      'postName': serializer.toJson<String?>(postName),
+      'postDescription': serializer.toJson<String?>(postDescription),
       'thumbnailImg': serializer.toJson<Uint8List?>(thumbnailImg),
     };
   }
 
-  ProfileTableData copyWith(
-          {int? id,
-          Value<int?> age = const Value.absent(),
-          Value<String?> userName = const Value.absent(),
-          Value<int?> phoneNumber = const Value.absent(),
+  PostTableData copyWith(
+          {int? postId,
+          Value<String?> postName = const Value.absent(),
+          Value<String?> postDescription = const Value.absent(),
           Value<Uint8List?> thumbnailImg = const Value.absent()}) =>
-      ProfileTableData(
-        id: id ?? this.id,
-        age: age.present ? age.value : this.age,
-        userName: userName.present ? userName.value : this.userName,
-        phoneNumber: phoneNumber.present ? phoneNumber.value : this.phoneNumber,
+      PostTableData(
+        postId: postId ?? this.postId,
+        postName: postName.present ? postName.value : this.postName,
+        postDescription: postDescription.present
+            ? postDescription.value
+            : this.postDescription,
         thumbnailImg:
             thumbnailImg.present ? thumbnailImg.value : this.thumbnailImg,
       );
   @override
   String toString() {
-    return (StringBuffer('ProfileTableData(')
-          ..write('id: $id, ')
-          ..write('age: $age, ')
-          ..write('userName: $userName, ')
-          ..write('phoneNumber: $phoneNumber, ')
+    return (StringBuffer('PostTableData(')
+          ..write('postId: $postId, ')
+          ..write('postName: $postName, ')
+          ..write('postDescription: $postDescription, ')
           ..write('thumbnailImg: $thumbnailImg')
           ..write(')'))
         .toString();
@@ -203,65 +183,57 @@ class ProfileTableData extends DataClass
 
   @override
   int get hashCode => Object.hash(
-      id, age, userName, phoneNumber, $driftBlobEquality.hash(thumbnailImg));
+      postId, postName, postDescription, $driftBlobEquality.hash(thumbnailImg));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is ProfileTableData &&
-          other.id == this.id &&
-          other.age == this.age &&
-          other.userName == this.userName &&
-          other.phoneNumber == this.phoneNumber &&
+      (other is PostTableData &&
+          other.postId == this.postId &&
+          other.postName == this.postName &&
+          other.postDescription == this.postDescription &&
           $driftBlobEquality.equals(other.thumbnailImg, this.thumbnailImg));
 }
 
-class ProfileTableCompanion extends UpdateCompanion<ProfileTableData> {
-  final Value<int> id;
-  final Value<int?> age;
-  final Value<String?> userName;
-  final Value<int?> phoneNumber;
+class PostTableCompanion extends UpdateCompanion<PostTableData> {
+  final Value<int> postId;
+  final Value<String?> postName;
+  final Value<String?> postDescription;
   final Value<Uint8List?> thumbnailImg;
-  const ProfileTableCompanion({
-    this.id = const Value.absent(),
-    this.age = const Value.absent(),
-    this.userName = const Value.absent(),
-    this.phoneNumber = const Value.absent(),
+  const PostTableCompanion({
+    this.postId = const Value.absent(),
+    this.postName = const Value.absent(),
+    this.postDescription = const Value.absent(),
     this.thumbnailImg = const Value.absent(),
   });
-  ProfileTableCompanion.insert({
-    this.id = const Value.absent(),
-    this.age = const Value.absent(),
-    this.userName = const Value.absent(),
-    this.phoneNumber = const Value.absent(),
+  PostTableCompanion.insert({
+    this.postId = const Value.absent(),
+    this.postName = const Value.absent(),
+    this.postDescription = const Value.absent(),
     this.thumbnailImg = const Value.absent(),
   });
-  static Insertable<ProfileTableData> custom({
-    Expression<int>? id,
-    Expression<int>? age,
-    Expression<String>? userName,
-    Expression<int>? phoneNumber,
+  static Insertable<PostTableData> custom({
+    Expression<int>? postId,
+    Expression<String>? postName,
+    Expression<String>? postDescription,
     Expression<Uint8List>? thumbnailImg,
   }) {
     return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (age != null) 'age': age,
-      if (userName != null) 'user_name': userName,
-      if (phoneNumber != null) 'phone_number': phoneNumber,
+      if (postId != null) 'post_id': postId,
+      if (postName != null) 'post_name': postName,
+      if (postDescription != null) 'post_description': postDescription,
       if (thumbnailImg != null) 'thumbnail_img': thumbnailImg,
     });
   }
 
-  ProfileTableCompanion copyWith(
-      {Value<int>? id,
-      Value<int?>? age,
-      Value<String?>? userName,
-      Value<int?>? phoneNumber,
+  PostTableCompanion copyWith(
+      {Value<int>? postId,
+      Value<String?>? postName,
+      Value<String?>? postDescription,
       Value<Uint8List?>? thumbnailImg}) {
-    return ProfileTableCompanion(
-      id: id ?? this.id,
-      age: age ?? this.age,
-      userName: userName ?? this.userName,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
+    return PostTableCompanion(
+      postId: postId ?? this.postId,
+      postName: postName ?? this.postName,
+      postDescription: postDescription ?? this.postDescription,
       thumbnailImg: thumbnailImg ?? this.thumbnailImg,
     );
   }
@@ -269,17 +241,14 @@ class ProfileTableCompanion extends UpdateCompanion<ProfileTableData> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
+    if (postId.present) {
+      map['post_id'] = Variable<int>(postId.value);
     }
-    if (age.present) {
-      map['age'] = Variable<int>(age.value);
+    if (postName.present) {
+      map['post_name'] = Variable<String>(postName.value);
     }
-    if (userName.present) {
-      map['user_name'] = Variable<String>(userName.value);
-    }
-    if (phoneNumber.present) {
-      map['phone_number'] = Variable<int>(phoneNumber.value);
+    if (postDescription.present) {
+      map['post_description'] = Variable<String>(postDescription.value);
     }
     if (thumbnailImg.present) {
       map['thumbnail_img'] = Variable<Uint8List>(thumbnailImg.value);
@@ -289,38 +258,34 @@ class ProfileTableCompanion extends UpdateCompanion<ProfileTableData> {
 
   @override
   String toString() {
-    return (StringBuffer('ProfileTableCompanion(')
-          ..write('id: $id, ')
-          ..write('age: $age, ')
-          ..write('userName: $userName, ')
-          ..write('phoneNumber: $phoneNumber, ')
+    return (StringBuffer('PostTableCompanion(')
+          ..write('postId: $postId, ')
+          ..write('postName: $postName, ')
+          ..write('postDescription: $postDescription, ')
           ..write('thumbnailImg: $thumbnailImg')
           ..write(')'))
         .toString();
   }
 }
 
-class $UsersTableTable extends UsersTable
-    with TableInfo<$UsersTableTable, UsersTableData> {
+class $UserRegistrationTableTable extends UserRegistrationTable
+    with TableInfo<$UserRegistrationTableTable, UserRegistrationTableData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $UsersTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  $UserRegistrationTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _userNameMeta =
+      const VerificationMeta('userName');
   @override
-  late final GeneratedColumn<int> userId = GeneratedColumn<int>(
-      'user_id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  late final GeneratedColumn<String> userName = GeneratedColumn<String>(
+      'user_name', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _userEmailMeta =
       const VerificationMeta('userEmail');
   @override
   late final GeneratedColumn<String> userEmail = GeneratedColumn<String>(
-      'user_email', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'user_email', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _userPasswordMeta =
       const VerificationMeta('userPassword');
   @override
@@ -328,23 +293,26 @@ class $UsersTableTable extends UsersTable
       'user_password', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [userId, userEmail, userPassword];
+  List<GeneratedColumn> get $columns => [userName, userEmail, userPassword];
   @override
-  String get aliasedName => _alias ?? 'users_table';
+  String get aliasedName => _alias ?? 'user_registration_table';
   @override
-  String get actualTableName => 'users_table';
+  String get actualTableName => 'user_registration_table';
   @override
-  VerificationContext validateIntegrity(Insertable<UsersTableData> instance,
+  VerificationContext validateIntegrity(
+      Insertable<UserRegistrationTableData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('user_id')) {
-      context.handle(_userIdMeta,
-          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+    if (data.containsKey('user_name')) {
+      context.handle(_userNameMeta,
+          userName.isAcceptableOrUnknown(data['user_name']!, _userNameMeta));
     }
     if (data.containsKey('user_email')) {
       context.handle(_userEmailMeta,
           userEmail.isAcceptableOrUnknown(data['user_email']!, _userEmailMeta));
+    } else if (isInserting) {
+      context.missing(_userEmailMeta);
     }
     if (data.containsKey('user_password')) {
       context.handle(
@@ -356,63 +324,65 @@ class $UsersTableTable extends UsersTable
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {userId};
+  Set<GeneratedColumn> get $primaryKey => {userEmail};
   @override
-  UsersTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  UserRegistrationTableData map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return UsersTableData(
-      userId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}user_id'])!,
+    return UserRegistrationTableData(
+      userName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}user_name']),
       userEmail: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}user_email']),
+          .read(DriftSqlType.string, data['${effectivePrefix}user_email'])!,
       userPassword: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}user_password']),
     );
   }
 
   @override
-  $UsersTableTable createAlias(String alias) {
-    return $UsersTableTable(attachedDatabase, alias);
+  $UserRegistrationTableTable createAlias(String alias) {
+    return $UserRegistrationTableTable(attachedDatabase, alias);
   }
 }
 
-class UsersTableData extends DataClass implements Insertable<UsersTableData> {
-  final int userId;
-  final String? userEmail;
+class UserRegistrationTableData extends DataClass
+    implements Insertable<UserRegistrationTableData> {
+  final String? userName;
+  final String userEmail;
   final String? userPassword;
-  const UsersTableData(
-      {required this.userId, this.userEmail, this.userPassword});
+  const UserRegistrationTableData(
+      {this.userName, required this.userEmail, this.userPassword});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['user_id'] = Variable<int>(userId);
-    if (!nullToAbsent || userEmail != null) {
-      map['user_email'] = Variable<String>(userEmail);
+    if (!nullToAbsent || userName != null) {
+      map['user_name'] = Variable<String>(userName);
     }
+    map['user_email'] = Variable<String>(userEmail);
     if (!nullToAbsent || userPassword != null) {
       map['user_password'] = Variable<String>(userPassword);
     }
     return map;
   }
 
-  UsersTableCompanion toCompanion(bool nullToAbsent) {
-    return UsersTableCompanion(
-      userId: Value(userId),
-      userEmail: userEmail == null && nullToAbsent
+  UserRegistrationTableCompanion toCompanion(bool nullToAbsent) {
+    return UserRegistrationTableCompanion(
+      userName: userName == null && nullToAbsent
           ? const Value.absent()
-          : Value(userEmail),
+          : Value(userName),
+      userEmail: Value(userEmail),
       userPassword: userPassword == null && nullToAbsent
           ? const Value.absent()
           : Value(userPassword),
     );
   }
 
-  factory UsersTableData.fromJson(Map<String, dynamic> json,
+  factory UserRegistrationTableData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return UsersTableData(
-      userId: serializer.fromJson<int>(json['userId']),
-      userEmail: serializer.fromJson<String?>(json['userEmail']),
+    return UserRegistrationTableData(
+      userName: serializer.fromJson<String?>(json['userName']),
+      userEmail: serializer.fromJson<String>(json['userEmail']),
       userPassword: serializer.fromJson<String?>(json['userPassword']),
     );
   }
@@ -420,26 +390,26 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'userId': serializer.toJson<int>(userId),
-      'userEmail': serializer.toJson<String?>(userEmail),
+      'userName': serializer.toJson<String?>(userName),
+      'userEmail': serializer.toJson<String>(userEmail),
       'userPassword': serializer.toJson<String?>(userPassword),
     };
   }
 
-  UsersTableData copyWith(
-          {int? userId,
-          Value<String?> userEmail = const Value.absent(),
+  UserRegistrationTableData copyWith(
+          {Value<String?> userName = const Value.absent(),
+          String? userEmail,
           Value<String?> userPassword = const Value.absent()}) =>
-      UsersTableData(
-        userId: userId ?? this.userId,
-        userEmail: userEmail.present ? userEmail.value : this.userEmail,
+      UserRegistrationTableData(
+        userName: userName.present ? userName.value : this.userName,
+        userEmail: userEmail ?? this.userEmail,
         userPassword:
             userPassword.present ? userPassword.value : this.userPassword,
       );
   @override
   String toString() {
-    return (StringBuffer('UsersTableData(')
-          ..write('userId: $userId, ')
+    return (StringBuffer('UserRegistrationTableData(')
+          ..write('userName: $userName, ')
           ..write('userEmail: $userEmail, ')
           ..write('userPassword: $userPassword')
           ..write(')'))
@@ -447,48 +417,49 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   }
 
   @override
-  int get hashCode => Object.hash(userId, userEmail, userPassword);
+  int get hashCode => Object.hash(userName, userEmail, userPassword);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is UsersTableData &&
-          other.userId == this.userId &&
+      (other is UserRegistrationTableData &&
+          other.userName == this.userName &&
           other.userEmail == this.userEmail &&
           other.userPassword == this.userPassword);
 }
 
-class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
-  final Value<int> userId;
-  final Value<String?> userEmail;
+class UserRegistrationTableCompanion
+    extends UpdateCompanion<UserRegistrationTableData> {
+  final Value<String?> userName;
+  final Value<String> userEmail;
   final Value<String?> userPassword;
-  const UsersTableCompanion({
-    this.userId = const Value.absent(),
+  const UserRegistrationTableCompanion({
+    this.userName = const Value.absent(),
     this.userEmail = const Value.absent(),
     this.userPassword = const Value.absent(),
   });
-  UsersTableCompanion.insert({
-    this.userId = const Value.absent(),
-    this.userEmail = const Value.absent(),
+  UserRegistrationTableCompanion.insert({
+    this.userName = const Value.absent(),
+    required String userEmail,
     this.userPassword = const Value.absent(),
-  });
-  static Insertable<UsersTableData> custom({
-    Expression<int>? userId,
+  }) : userEmail = Value(userEmail);
+  static Insertable<UserRegistrationTableData> custom({
+    Expression<String>? userName,
     Expression<String>? userEmail,
     Expression<String>? userPassword,
   }) {
     return RawValuesInsertable({
-      if (userId != null) 'user_id': userId,
+      if (userName != null) 'user_name': userName,
       if (userEmail != null) 'user_email': userEmail,
       if (userPassword != null) 'user_password': userPassword,
     });
   }
 
-  UsersTableCompanion copyWith(
-      {Value<int>? userId,
-      Value<String?>? userEmail,
+  UserRegistrationTableCompanion copyWith(
+      {Value<String?>? userName,
+      Value<String>? userEmail,
       Value<String?>? userPassword}) {
-    return UsersTableCompanion(
-      userId: userId ?? this.userId,
+    return UserRegistrationTableCompanion(
+      userName: userName ?? this.userName,
       userEmail: userEmail ?? this.userEmail,
       userPassword: userPassword ?? this.userPassword,
     );
@@ -497,8 +468,8 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (userId.present) {
-      map['user_id'] = Variable<int>(userId.value);
+    if (userName.present) {
+      map['user_name'] = Variable<String>(userName.value);
     }
     if (userEmail.present) {
       map['user_email'] = Variable<String>(userEmail.value);
@@ -511,8 +482,8 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
 
   @override
   String toString() {
-    return (StringBuffer('UsersTableCompanion(')
-          ..write('userId: $userId, ')
+    return (StringBuffer('UserRegistrationTableCompanion(')
+          ..write('userName: $userName, ')
           ..write('userEmail: $userEmail, ')
           ..write('userPassword: $userPassword')
           ..write(')'))
@@ -522,15 +493,15 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
-  late final $ProfileTableTable profileTable = $ProfileTableTable(this);
-  late final $UsersTableTable usersTable = $UsersTableTable(this);
+  late final $PostTableTable postTable = $PostTableTable(this);
+  late final $UserRegistrationTableTable userRegistrationTable =
+      $UserRegistrationTableTable(this);
   late final UsersTableDao usersTableDao = UsersTableDao(this as AppDatabase);
-  late final ProfileTableDao profileTableDao =
-      ProfileTableDao(this as AppDatabase);
+  late final PostTableDao postTableDao = PostTableDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [profileTable, usersTable];
+      [postTable, userRegistrationTable];
 }

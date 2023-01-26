@@ -4,5 +4,6 @@ part of 'user_table_dao.dart';
 
 // ignore_for_file: type=lint
 mixin _$UsersTableDaoMixin on DatabaseAccessor<AppDatabase> {
-  $UsersTableTable get usersTable => attachedDatabase.usersTable;
+  $UserRegistrationTableTable get userRegistrationTable =>
+      attachedDatabase.userRegistrationTable;
 }
