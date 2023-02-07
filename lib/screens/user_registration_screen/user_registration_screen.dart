@@ -59,8 +59,8 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                           //Navigator.of(context).pushNamed("/login");
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) {
-                                return const UserLoginScreen();
-                              }));
+                            return const UserLoginScreen();
+                          }));
                         },
                         child: const Text(
                           " Login ",

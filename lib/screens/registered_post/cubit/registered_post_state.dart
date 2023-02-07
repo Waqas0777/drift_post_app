@@ -8,8 +8,9 @@ class RegisteredPostInitialState extends RegisteredPostState {}
 class RegisteredPostLoadingState extends RegisteredPostState {}
 
 class RegisteredPostLoadedState extends RegisteredPostState {
-  final List<PostTableData> profileList;
-  RegisteredPostLoadedState(this.profileList);
+  final List<PostTableData> postList;
+
+  RegisteredPostLoadedState(this.postList);
 }
 
 class RegisteredPostErrorState extends RegisteredPostState {

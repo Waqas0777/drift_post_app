@@ -11,7 +11,6 @@ import 'dart:io';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import '../../../main.dart';
-import '../../registered_post/cubit/registered_post_cubit.dart';
 
 part 'create_post_state.dart';
 
@@ -21,10 +20,10 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   File? image;
   String myImage = '';
 
-  void submittedData(BuildContext context, File image, String postTitle,
-      String postDescription) {
+  void submittedData(BuildContext context, String email, File image,
+      String postTitle, String postDescription) {
     // emit(RegistrationLoadingState());
-    validateProfile(context, image, postTitle, postDescription)
+    validateProfile(context, email, image, postTitle, postDescription)
         .then((value) async {
       if (value) {
         log("Added $value");
@@ -52,8 +51,8 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     });
   }
 
-  Future<bool> validateProfile(
-      context, File image, String postTitle, String postDescription) async {
+  Future<bool> validateProfile(context, String email, File image,
+      String postTitle, String postDescription) async {
     //SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if (image.path.isEmpty || postTitle.isEmpty || postDescription.isEmpty) {
@@ -64,10 +63,11 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       final post = PostTableCompanion(
           postName: drift.Value(postTitle),
           postDescription: drift.Value(postDescription),
+          userEmail: drift.Value(email),
           thumbnailImg: drift.Value(File(image.path).readAsBytesSync()));
       // if()
-      getIt<AppDatabase>().postTableDao.addUserProfile(post).then((value) {
-      //  log("profilePic $value");
+      getIt<AppDatabase>().postTableDao.addPost(post).then((value) {
+        //  log("profilePic $value");
         Fluttertoast.showToast(
             msg: "Post Added Successfully",
             gravity: ToastGravity.BOTTOM,

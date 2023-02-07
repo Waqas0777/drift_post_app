@@ -16,6 +16,22 @@ class RegisteredPostScreen extends StatefulWidget {
 }
 
 class _RegisteredPostScreenState extends State<RegisteredPostScreen> {
+  String emaill = getIt<SharedPreferencesModel>().getLoginEmail().toString();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    // context.read()<RegisteredPostCubit>().getAllPost();
+    //getPost();
+
+    super.initState();
+  }
+
+  // void getPost() {
+  //   BlocProvider.of<RegisteredPostCubit>(context).getAllPost();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -49,7 +65,7 @@ class _RegisteredPostScreenState extends State<RegisteredPostScreen> {
         ),
         body: SafeArea(
             child: BlocProvider(
-                create: (context) => RegisteredPostCubit()..getAllPost(),
+                create: (context) => RegisteredPostCubit()..getAllPost(emaill),
                 child: BlocConsumer<RegisteredPostCubit, RegisteredPostState>(
                   listener: (context, state) {},
                   builder: (context, state) {
@@ -74,13 +90,12 @@ class _RegisteredPostScreenState extends State<RegisteredPostScreen> {
                             ),
                           );
                         } else if (state is RegisteredPostLoadedState) {
-                          log("List Length $state.profileList.length.toString()");
+                          log("List Length ${state.postList.length}");
 
                           return ListView.builder(
-                              itemCount: state.profileList.length,
+                              itemCount: state.postList.length,
                               itemBuilder: (BuildContext context, int index) {
-                                var listData =
-                                    state.profileList.elementAt(index);
+                                var listData = state.postList.elementAt(index);
                                 Uint8List? bytesImage;
                                 bytesImage = listData.thumbnailImg;
 
@@ -112,6 +127,16 @@ class _RegisteredPostScreenState extends State<RegisteredPostScreen> {
                                                 children: [
                                                   const Text("Post Title : "),
                                                   Text(listData.postName
+                                                      .toString()),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  const Text("User Email : "),
+                                                  Text(listData.userEmail
                                                       .toString()),
                                                 ],
                                               ),
@@ -234,7 +259,10 @@ class _RegisteredPostScreenState extends State<RegisteredPostScreen> {
                     onTap: () async {
                       getIt<SharedPreferencesModel>().setLoginStatus(
                           false); // prefs.setBool("isLoggedIn", true);
-
+                      //getIt<SharedPreferencesModel>().setLoginEmail("");
+                      getIt<SharedPreferencesModel>().removeEmail();
+                      getIt<SharedPreferencesModel>().prefs.clear();
+                      // BlocProvider.of<RegisteredPostCubit>(context).c
                       Navigator.pop(context);
                       Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (BuildContext context) {

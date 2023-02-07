@@ -16,17 +16,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDependencyInjection();
   runApp(const MyApp());
-
 }
-
 
 Future<void> initDependencyInjection() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   getIt.registerSingleton<AppDatabase>(AppDatabase());
-   getIt.registerSingleton<SharedPreferencesModel>(SharedPreferencesModel(sharedPreferences));
+  // getIt.registerSingleton<RegisteredPostCubit>(RegisteredPostCubit());
+  getIt.registerSingleton<SharedPreferencesModel>(
+      SharedPreferencesModel(sharedPreferences));
 
   // getIt.registerSingleton<UsersTableDao>(UsersTableDao());
-
 }
 
 final getIt = GetIt.instance;
@@ -38,18 +37,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<UserCubit>(create:(BuildContext context)=>UserCubit()),
+        BlocProvider<UserCubit>(create: (BuildContext context) => UserCubit()),
         // BlocProvider<RegisteredUserCubit>(create:(BuildContext context)=>RegisteredUserCubit()..getAllUsers()),
-        BlocProvider<LoginCubit>(create:(BuildContext context)=>LoginCubit()),
-        BlocProvider<RegisteredPostCubit>(create:(BuildContext context)=>RegisteredPostCubit()),
-        BlocProvider<CreatePostCubit>(create:(BuildContext context)=>CreatePostCubit()),
+        BlocProvider<LoginCubit>(
+            create: (BuildContext context) => LoginCubit()),
+        BlocProvider<RegisteredPostCubit>(
+            create: (BuildContext context) => RegisteredPostCubit()),
+        BlocProvider<CreatePostCubit>(
+            create: (BuildContext context) => CreatePostCubit()),
         // BlocProvider<RegisteredProfileCubit>(create:(BuildContext context)=>RegisteredProfileCubit()..getAllProfiles()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-
           primarySwatch: Colors.blue,
         ),
         home: const SplashScreen(),

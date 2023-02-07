@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../../main.dart';
+import '../../model/sharedpreferences_model.dart';
 import 'cubit/create_post_cubit.dart';
 
 class CreatePostScreen extends StatefulWidget {
@@ -130,6 +132,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               BlocProvider.of<CreatePostCubit>(context)
                                   .submittedData(
                                       context,
+                                      getIt<SharedPreferencesModel>()
+                                          .getLoginEmail()
+                                          .toString(),
                                       image,
                                       titleController.text.trim(),
                                       descriptionController.text.trim());

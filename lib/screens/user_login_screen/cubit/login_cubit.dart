@@ -8,6 +8,7 @@ import 'package:meta/meta.dart';
 import '../../../database/app_database.dart';
 import '../../../main.dart';
 import '../../../model/sharedpreferences_model.dart';
+import '../../registered_post/cubit/registered_post_cubit.dart';
 import '../../registered_post/registered_post_screen.dart';
 
 part 'login_state.dart';
@@ -24,6 +25,11 @@ class LoginCubit extends Cubit<LoginState> {
         emit(LoginSuccessState());
         getIt<SharedPreferencesModel>()
             .setLoginStatus(true); // prefs.setBool("isLoggedIn", true);
+        getIt<SharedPreferencesModel>().setLoginEmail(
+            userEmail); // prefs.setString("userEmail", userEmail);
+        log(userEmail, name: "userEmail");
+        BlocProvider.of<RegisteredPostCubit>(context).getAllPost(userEmail);
+
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) {
           return const RegisteredPostScreen();
@@ -49,3 +55,4 @@ class LoginCubit extends Cubit<LoginState> {
         .loginByEmailPassword(userEmail, userPassword);
   }
 }
+//getIt<SharedPreferencesModel>().getLoginEmail().toString()

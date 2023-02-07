@@ -15,23 +15,28 @@ class RegisteredPostCubit extends Cubit<RegisteredPostState> {
 
   late List<PostTableData> postDataList = [];
 
-  void getAllPost() {
-    log("calling getAllEmployees");
+  void getAllPost(String em) {
+    log("calling getAllPosts");
 
     try {
       log("calling try");
       emit(RegisteredPostLoadingState());
 
-      getIt<AppDatabase>().postTableDao.getPosts.listen((value) async {
-        log("event $value");
+      getIt<AppDatabase>()
+          .postTableDao
+          .getAllPostsByEmailAddress(em)
+          .listen((em) async {
+        //log("event $value");
 
         postDataList.clear();
-        for (var element in value) {
+        for (var element in em) {
+          log("registered list=${element}");
           postDataList.add(PostTableData(
             postId: element.postId,
             postName: element.postName,
             postDescription: element.postDescription,
             thumbnailImg: element.thumbnailImg,
+            userEmail: element.userEmail,
           ));
 
           //log("LoadedState");

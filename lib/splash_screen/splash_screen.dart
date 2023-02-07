@@ -15,6 +15,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late final bool status;
+  late final String userEmail;
 
   @override
   void initState() {
@@ -24,12 +25,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void startTimer() async {
-     status = getIt<SharedPreferencesModel>().getLoginStatus();
+    status = getIt<SharedPreferencesModel>().getLoginStatus();
     Timer(const Duration(seconds: 1), () {
       navigateUser(); //It will redirect  after 3 seconds
     });
     setState(() {});
-
   }
 
   void navigateUser() async {

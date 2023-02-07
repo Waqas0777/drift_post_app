@@ -16,6 +16,7 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
 
   TextEditingController userEmailController = TextEditingController();
   TextEditingController userPasswordController = TextEditingController();
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -33,72 +34,70 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
       ),
       body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            child: SingleChildScrollView(
-              child: Center(
-                child: Column(
+        padding: const EdgeInsets.symmetric(horizontal: 14.0),
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                buildFormWidget(),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const SizedBox(
-                      height: 20,
+                    const Text(
+                      "Don't have an account?",
+                      style: TextStyle(fontSize: 16),
                     ),
-                    buildFormWidget(),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        const Text(
-                          "Don't have an account?",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        InkWell(
-                            onTap: () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return const UserRegistrationScreen();
-                              }));
-                            },
-                            child: const Text(
-                              " Sign Up ",
-                              style: TextStyle(fontSize: 16, color: Colors.blue),
-                            )),
-                      ],
-                    ),
-
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    BlocBuilder<LoginCubit, LoginState>(
-                      builder: (context, state) {
-                        return CupertinoButton(
-                          color: Colors.blue,
-                          onPressed: () {
-
-                            if (_formKey.currentState!.validate()) {
-                              BlocProvider.of<LoginCubit>(context).submittedData(
-                                context,
-                                userEmailController.text.trim(),
-                                userPasswordController.text.trim(),
-                              );
-                              // Navigator.of(context)
-                              //     .pushReplacement(MaterialPageRoute(builder: (context) {
-                              //   return const MyPostsScreen();
-                              // }));
-                            }
-                            // Navigator.push(context, MaterialPageRoute(builder: (context){
-                            //   return UpdateEmployeeScreen();
-                            // }));
-                          },
-                          child: const Text("Login"),
-                        );
-                      },
-                    ),
+                    InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return const UserRegistrationScreen();
+                          }));
+                        },
+                        child: const Text(
+                          " Sign Up ",
+                          style: TextStyle(fontSize: 16, color: Colors.blue),
+                        )),
                   ],
                 ),
-              ),
+                const SizedBox(
+                  height: 10,
+                ),
+                BlocBuilder<LoginCubit, LoginState>(
+                  builder: (context, state) {
+                    return CupertinoButton(
+                      color: Colors.blue,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          BlocProvider.of<LoginCubit>(context).submittedData(
+                            context,
+                            userEmailController.text.trim(),
+                            userPasswordController.text.trim(),
+                          );
+                          // Navigator.of(context)
+                          //     .pushReplacement(MaterialPageRoute(builder: (context) {
+                          //   return const MyPostsScreen();
+                          // }));
+                        }
+                        // Navigator.push(context, MaterialPageRoute(builder: (context){
+                        //   return UpdateEmployeeScreen();
+                        // }));
+                      },
+                      child: const Text("Login"),
+                    );
+                  },
+                ),
+              ],
             ),
-          )),
+          ),
+        ),
+      )),
     );
   }
 
@@ -135,7 +134,6 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
               }
             },
           ),
-
           const SizedBox(
             height: 15,
           ),
@@ -174,5 +172,4 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
       ),
     );
   }
-
 }

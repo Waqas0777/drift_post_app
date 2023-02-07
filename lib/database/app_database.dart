@@ -7,6 +7,7 @@ import 'package:drift_post_app/database/tables/post_table.dart';
 import 'package:drift_post_app/database/tables/user_registration_table.dart';
 import 'dao/post_table_dao.dart';
 import 'dao/user_table_dao.dart';
+
 part 'app_database.g.dart';
 
 //specifying location to database
@@ -19,12 +20,13 @@ LazyDatabase _openConnection() {
 }
 
 @DriftDatabase(
-    tables: [PostTable, UserRegistrationTable], daos: [UsersTableDao, PostTableDao])
+    tables: [PostTable, UserRegistrationTable],
+    daos: [UsersTableDao, PostTableDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   //@override
   // MigrationStrategy get migration => MigrationStrategy(
@@ -39,4 +41,10 @@ class AppDatabase extends _$AppDatabase {
   //         }
   //       },
   //     );
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        beforeOpen: (OpeningDetails details) async {
+          await customStatement('PRAGMA foreign_keys = ON');
+        },
+      );
 }

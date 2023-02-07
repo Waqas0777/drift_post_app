@@ -8,19 +8,20 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meta/meta.dart';
 import 'package:drift/drift.dart' as drift;
 import '../../../main.dart';
+
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
   UserCubit() : super(UserInitialState());
 
-  void submittedData(
-      BuildContext context, String userEmail, String userName, String userPassword) {
-    validateUser(context, userEmail,userName, userPassword).then((value) async {
+  void submittedData(BuildContext context, String userEmail, String userName,
+      String userPassword) {
+    validateUser(context, userEmail, userName, userPassword)
+        .then((value) async {
       if (value) {
-         //log("print $value");
-       // Navigator.pop(context);
+        //log("print $value");
+        // Navigator.pop(context);
         emit(UserSuccessState());
-
       } else {
         //log("Empty $value");
         log("UserAlreadyexits $value");
@@ -47,7 +48,6 @@ class UserCubit extends Cubit<UserState> {
     String userName,
     String userPassword,
   ) async {
-
     if (userEmail.isEmpty || userPassword.isEmpty || userName.isEmpty) {
       return false;
     } else {
@@ -56,8 +56,6 @@ class UserCubit extends Cubit<UserState> {
         userEmail: drift.Value(userEmail),
         userPassword: drift.Value(userPassword),
       );
-
-
 
       getIt<AppDatabase>().usersTableDao.addUser(entity).then((value) {
         log("after recordadd $entity");
@@ -77,19 +75,6 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // if (value) {
 // log("print $value");

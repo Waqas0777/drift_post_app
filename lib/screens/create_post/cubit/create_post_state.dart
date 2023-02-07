@@ -15,9 +15,9 @@ class CreatePostInitialState extends CreatePostState {
 //   // TODO: implement props
 //   List<Object?> get props => [];
 // }
- class PicLoadedState extends CreatePostState{
-
+class PicLoadedState extends CreatePostState {
   PicLoadedState(this.image);
+
   final File image;
 
   @override
@@ -25,15 +25,14 @@ class CreatePostInitialState extends CreatePostState {
   List<Object?> get props => [image];
 }
 
-
 class CreatePostSuccessState extends CreatePostState {
   @override
   // TODO: implement props
   List<Object?> get props => [];
 }
-class PicLoadingState extends CreatePostState{
+
+class PicLoadingState extends CreatePostState {
   @override
   // TODO: implement props
   List<Object?> get props => throw UnimplementedError();
-
 }
