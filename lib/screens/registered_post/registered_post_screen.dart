@@ -3,10 +3,13 @@ import 'dart:typed_data';
 import 'package:drift_post_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../database/app_database.dart';
 import '../../model/sharedpreferences_model.dart';
 import '../create_post/create_post_screen.dart';
+import '../update_post/update_post_screen.dart';
 import '../user_login_screen/user_login_screen.dart';
 import 'cubit/registered_post_cubit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RegisteredPostScreen extends StatefulWidget {
   const RegisteredPostScreen({Key? key}) : super(key: key);
@@ -176,38 +179,38 @@ class _RegisteredPostScreenState extends State<RegisteredPostScreen> {
                                             ],
                                           ),
                                         ),
-                                        // Column(
-                                        //   mainAxisAlignment:
-                                        //   MainAxisAlignment.spaceBetween,
-                                        //   children: [
-                                        //     GestureDetector(
-                                        //         onTap: () {
-                                        //           Navigator.of(context).push(
-                                        //               MaterialPageRoute(
-                                        //                   builder: (context) {
-                                        //                     return UpdateEmployeeScreen(
-                                        //                       id: listData.id,
-                                        //                     );
-                                        //                   }));
-                                        //         },
-                                        //         child: const Icon(
-                                        //           Icons.edit,
-                                        //           color: Colors.green,
-                                        //         )),
-                                        //     const SizedBox(
-                                        //       height: 50,
-                                        //     ),
-                                        //     GestureDetector(
-                                        //         onTap: () {
-                                        //           dialogShow(listData.id);
-                                        //           //deleteEmployee(empData[index].id);
-                                        //         },
-                                        //         child: const Icon(
-                                        //           Icons.delete,
-                                        //           color: Colors.red,
-                                        //         )),
-                                        //   ],
-                                        // )
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (context) {
+                                                    return UpdatePostScreen(
+                                                      data: listData,
+                                                    );
+                                                  }));
+                                                },
+                                                child: const Icon(
+                                                  Icons.edit,
+                                                  color: Colors.green,
+                                                )),
+                                            const SizedBox(
+                                              height: 50,
+                                            ),
+                                            GestureDetector(
+                                                onTap: () {
+                                                  dialogShow(listData.postId);
+                                                  //deleteEmployee(empData[index].id);
+                                                },
+                                                child: const Icon(
+                                                  Icons.delete,
+                                                  color: Colors.red,
+                                                )),
+                                          ],
+                                        )
                                       ],
                                     ),
                                   ),
@@ -228,6 +231,91 @@ class _RegisteredPostScreenState extends State<RegisteredPostScreen> {
                 ))),
       ),
     );
+  }
+
+  void dialogShow(int id) {
+    showDialog(
+        context: context,
+        builder: (context) => Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
+              //this right here
+              child: SizedBox(
+                height: 200,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Are You Sure You Want to Delete??",
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              getIt<AppDatabase>()
+                                  .postTableDao
+                                  .deletePost(id)
+                                  .then((value) => Fluttertoast.showToast(
+                                      msg: "Post deleted Successfully",
+                                      backgroundColor: Colors.red,
+                                      gravity: ToastGravity.BOTTOM));
+                              // setState(() {});
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              width: 100,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20.0),
+                                color: Colors.red,
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  "Yes",
+                                  style: TextStyle(
+                                      fontSize: 17, color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              width: 100,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20.0),
+                                color: Colors.green,
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  "No",
+                                  style: TextStyle(
+                                      fontSize: 17, color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ));
   }
 
   Widget logout() {

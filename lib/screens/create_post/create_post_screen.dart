@@ -8,6 +8,7 @@ import '../../model/sharedpreferences_model.dart';
 import 'cubit/create_post_cubit.dart';
 
 class CreatePostScreen extends StatefulWidget {
+
   const CreatePostScreen({Key? key}) : super(key: key);
 
   @override
@@ -20,7 +21,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   // Uint8List? uInt8ListImage;
   // String myImage = '';
-  List<int>? list;
+  // List<int>? list;
   final _formKey = GlobalKey<FormState>();
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -290,7 +291,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             ),
             validator: (value) {
               if (value!.isEmpty) {
-                return 'Please enter your Name';
+                return 'Please enter post Description';
               }
               // else if (int.parse(value) <= 120) {
               //   return "Age must be less than 121";

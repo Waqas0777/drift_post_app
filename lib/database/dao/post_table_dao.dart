@@ -1,9 +1,6 @@
 import 'dart:developer';
-
 import 'package:drift/drift.dart';
 import 'package:drift_post_app/database/tables/user_registration_table.dart';
-import '../../main.dart';
-import '../../model/sharedpreferences_model.dart';
 import '../app_database.dart';
 import '../tables/post_table.dart';
 
@@ -12,7 +9,6 @@ part 'post_table_dao.g.dart';
 @DriftAccessor(tables: [PostTable, UserRegistrationTable])
 class PostTableDao extends DatabaseAccessor<AppDatabase>
     with _$PostTableDaoMixin {
-  //String emailAd = getIt<SharedPreferencesModel>().getLoginEmail();
   final AppDatabase db;
 
   PostTableDao(this.db) : super(db);
@@ -23,14 +19,27 @@ class PostTableDao extends DatabaseAccessor<AppDatabase>
     return into(postTable).insert(entry);
   }
 
-  Stream<List<PostTableData>> getAllPostsByEmailAddress(em) {
-    log(em, name: "emaill");
-    return (select(postTable)..where((tbl) => tbl.userEmail.equals(em)))
+  //Get a single employee
+  Future<PostTableData> getPost(int id) async {
+    return await (select(postTable)..where((tbl) => tbl.postId.equals(id)))
+        .getSingle();
+  }
+
+  Stream<List<PostTableData>> getAllPostsByEmailAddress(email) {
+    log(email, name: "emaill");
+    return (select(postTable)..where((tbl) => tbl.userEmail.equals(email)))
         .watch();
   }
 
-//Future updatePost(PostTableCompanion post) => update(postTable).replace(post);
+    Future updatePost(PostTableCompanion post) => update(postTable).replace(post);
+
+  //delete a post
+  Future<int> deletePost(int id) async {
+    return await (delete(postTable)..where((tbl) => tbl.postId.equals(id)))
+        .go();
+  }
+
+//you can also write the delete query like below
 
 //Future deletePost(PostTableCompanion post) => delete(postTable).delete(post);
-
 }
