@@ -31,7 +31,8 @@ class PostTableDao extends DatabaseAccessor<AppDatabase>
         .watch();
   }
 
-    Future updatePost(PostTableCompanion post) => update(postTable).replace(post);
+//update
+  Future updatePost(PostTableCompanion post) => update(postTable).replace(post);
 
   //delete a post
   Future<int> deletePost(int id) async {

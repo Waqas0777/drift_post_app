@@ -16,12 +16,7 @@ class CreatePostScreen extends StatefulWidget {
 }
 
 class _CreatePostScreenState extends State<CreatePostScreen> {
-  //final ImagePicker _picker = ImagePicker();
-  //File? _image;
 
-  // Uint8List? uInt8ListImage;
-  // String myImage = '';
-  // List<int>? list;
   final _formKey = GlobalKey<FormState>();
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();

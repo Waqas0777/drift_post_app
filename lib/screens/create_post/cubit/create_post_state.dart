@@ -6,20 +6,12 @@ abstract class CreatePostState extends Equatable {}
 class CreatePostInitialState extends CreatePostState {
   @override
   // TODO: implement props
-
   List<Object?> get props => [];
 }
 
-// class PicInitialState extends ProfileState{
-//   @override
-//   // TODO: implement props
-//   List<Object?> get props => [];
-// }
 class PicLoadedState extends CreatePostState {
   PicLoadedState(this.image);
-
   final File image;
-
   @override
   // TODO: implement props
   List<Object?> get props => [image];

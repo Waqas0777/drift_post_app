@@ -188,8 +188,10 @@ class _RegisteredPostScreenState extends State<RegisteredPostScreen> {
                                                   Navigator.of(context).push(
                                                       MaterialPageRoute(
                                                           builder: (context) {
-                                                    return UpdatePostScreen(
-                                                      data: listData,
+                                                            //data: listData,
+                                                            return UpdatePostScreen(
+                                                              data:listData,
+                                                      id: listData.postId,
                                                     );
                                                   }));
                                                 },
